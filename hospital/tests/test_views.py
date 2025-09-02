@@ -1022,6 +1022,28 @@ def test_patient_discharge_view(client, patient_user):
     assert 'hospital/patient_discharge.html' in [t.name for t in response.templates]
     assert 'is_discharged' in response.context
     assert 'patient' in response.context
+    
+def test_aboutus_view(client):
+    response = client.get('/aboutus')
+    assert response.status_code == 200
+    assert 'hospital/aboutus.html' in [t.name for t in response.templates]
+
+def test_contactus_view_get(client):
+    response = client.get('/contactus')
+    assert response.status_code == 200
+    assert 'hospital/contactus.html' in [t.name for t in response.templates]
+    assert 'form' in response.context
+
+def test_contactus_view_post(client):
+    data = {
+        'name': 'Test User',
+        'email': 'test@example.com',
+        'message': 'Hello, this is a test.'
+    }
+    response = client.post('/contactus', data)
+    assert response.status_code == 200
+    assert 'hospital/contactus.html' in [t.name for t in response.templates]
+    assert 'form' in response.context
 
 
 
