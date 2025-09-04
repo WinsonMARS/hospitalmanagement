@@ -81,13 +81,15 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'hospitaldb',
-        'USER': 'hospitaluser', 
+        'USER': 'hospitaluser',
         'PASSWORD': 'hospitalpass',
         'HOST': 'db',
         'PORT': '5432',
         'OPTIONS': {
-            'options': '-c timezone=UTC'  # ← FORCE UTC TIMEZONE
-        }
+            'options': '-c timezone=UTC',
+            'isolation_level': None,  # ← ADD THIS LINE
+        },
+        'AUTOCOMMIT': True,  # ← AND THIS LINE
     }
 }
 
