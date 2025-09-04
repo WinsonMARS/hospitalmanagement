@@ -24,5 +24,5 @@ ENV PYTHONPATH=/app:$PYTHONPATH
 
 EXPOSE 8000
 
-# Run the patch first, then migrations, then server
-CMD ["sh", "-c", "python patch_utc_check.py && python manage.py migrate && python manage.py runserver 0.0.0.0:8000"]
+# Use our patched runner instead of manage.py
+CMD ["sh", "-c", "python run_with_patch.py migrate && python run_with_patch.py runserver 0.0.0.0:8000"]
