@@ -79,8 +79,17 @@ WSGI_APPLICATION = 'hospitalmanagement.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'hospitaldb',
+        'USER': 'hospitaluser',
+        'PASSWORD': 'hospitalpass',
+        'HOST': 'db',
+        'PORT': '5432',
+        'OPTIONS': {
+            'options': '-c timezone=UTC',
+            'isolation_level': None,  # ← ADD THIS LINE
+        },
+        'AUTOCOMMIT': True,  # ← AND THIS LINE
     }
 }
 
@@ -124,6 +133,9 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 STATICFILES_DIRS=[STATIC_DIR,]
+
+# STATIC_ROOT is the directory where collectstatic will gather all static files for production (and for Docker builds).
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles') # added this line
 
 MEDIA_ROOT=os.path.join(BASE_DIR,'static')
 
