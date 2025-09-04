@@ -81,10 +81,13 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'hospitaldb',
-        'USER': 'hospitaluser',
+        'USER': 'hospitaluser', 
         'PASSWORD': 'hospitalpass',
-        'HOST': 'db',  # This matches the service name in docker-compose.yml
-        'PORT': 5432,
+        'HOST': 'db',
+        'PORT': '5432',
+        'OPTIONS': {
+            'options': '-c timezone=UTC'  # ← FORCE UTC TIMEZONE
+        }
     }
 }
 
