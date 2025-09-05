@@ -77,21 +77,31 @@ WSGI_APPLICATION = 'hospitalmanagement.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'hospitaldb',
-        'USER': 'hospitaluser',
-        'PASSWORD': 'hospitalpass',
-        'HOST': 'db',
-        'PORT': '5432',
-        'OPTIONS': {
-            'options': '-c timezone=UTC',
-            'isolation_level': None,  # ← ADD THIS LINE
-        },
-        'AUTOCOMMIT': True,  # ← AND THIS LINE
+if os.environ.get("GITHUB_WORKFLOW") or os.environ.get("USE_SQLITE") == "1":
+    print("=== Using SQLite Database ===")
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": os.path.join(BASE_DIR, "db.sqlite3"),
+        }
     }
-}
+else:
+    print("=== Using PostgreSQL Database ===")
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': 'hospitaldb',
+            'USER': 'hospitaluser',
+            'PASSWORD': 'hospitalpass',
+            'HOST': 'localhost',
+            'PORT': '5432',
+            'OPTIONS': {
+                'options': '-c timezone=UTC',
+                'isolation_level': None,  # ← ADD THIS LINE
+            },
+            'AUTOCOMMIT': True,  # ← AND THIS LINE
+        }
+    }
 
 
 # Password validation
