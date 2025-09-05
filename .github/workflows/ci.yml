@@ -19,13 +19,11 @@ jobs:
           cache: 'pip'
 
       - name: Install dependencies
-        working-directory: ./hospitalmanagement
         run: |
           pip install --upgrade pip
-          pip install -r requirements.txt
+          pip install -r requirement.txt
 
       - name: Run build script
-        working-directory: ./hospitalmanagement
         run: .\build.bat
 
   test:
@@ -58,15 +56,12 @@ jobs:
           cache: 'pip'
 
       - name: Install dependencies
-        working-directory: ./hospitalmanagement
-        run: pip install -r requirements.txt
+        run: pip install -r requirement.txt
 
       - name: Run migrations
-        working-directory: ./hospitalmanagement
         run: python manage.py migrate
 
       - name: Run pytest with coverage + reports
-        working-directory: ./hospitalmanagement
         run: |
           pytest --cov=hospital \
                  --cov-report=term-missing \
@@ -81,9 +76,9 @@ jobs:
         with:
           name: test-reports
           path: |
-            hospitalmanagement/htmlcov
-            hospitalmanagement/report.html
-            hospitalmanagement/test-results.xml
+            htmlcov
+            report.html
+            test-results.xml
 
   docker:
     runs-on: ubuntu-latest
@@ -98,7 +93,7 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Build Docker image
-        run: docker build -t ${{ secrets.DOCKER_USERNAME }}/hospitalmanagement:latest ./hospitalmanagement
+        run: docker build -t ${{ secrets.DOCKER_USERNAME }}/hospitalmanagement:latest .
 
       - name: Push Docker image
         run: docker push ${{ secrets.DOCKER_USERNAME }}/hospitalmanagement:latest
