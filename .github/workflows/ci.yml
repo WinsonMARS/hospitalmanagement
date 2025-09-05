@@ -17,6 +17,7 @@ jobs:
         with:
           python-version: '3.9'
           cache: 'pip'
+          cache-key: pip-cache-${{ runner.os }}-v2   
 
       - name: Install dependencies
         run: |
@@ -54,6 +55,7 @@ jobs:
         with:
           python-version: '3.9'
           cache: 'pip'
+          cache-key: pip-cache-${{ runner.os }}-v2   
 
       - name: Install dependencies
         run: pip install -r requirement.txt
