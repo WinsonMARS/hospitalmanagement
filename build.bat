@@ -8,6 +8,9 @@ call venv\Scripts\activate
 python -m pip install --upgrade pip || echo pip upgrade skipped
 pip install -r requirement.txt
 
+:: Step 3: Force SQLite for local build
+set USE_SQLITE=1
+
 :: Step 3: Apply database migrations
 python manage.py makemigrations
 python manage.py migrate

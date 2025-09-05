@@ -1,0 +1,38 @@
+name: Django CI
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: "3.9"
+
+    - name: Install dependencies
+      run: |
+        python -m venv venv
+        source venv/bin/activate
+        pip install --upgrade pip
+        pip install -r requirement.txt
+
+    - name: Run migrations
+      run: |
+        source venv/bin/activate
+        python manage.py makemigrations
+        python manage.py migrate --noinput
+
+    - name: Run tests
+      run: |
+        source venv/bin/activate
+        pytest --disable-warnings --html=report.html --self-contained-html --junitxml=test-results.xml
