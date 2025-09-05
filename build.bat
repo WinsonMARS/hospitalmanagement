@@ -11,13 +11,13 @@ pip install -r requirement.txt
 :: Step 3: Force SQLite for local build
 set USE_SQLITE=1
 
-:: Step 3: Apply database migrations
+:: Step 4: Apply database migrations
 python manage.py makemigrations
 python manage.py migrate
 
 echo "=== Build Completed Successfully ==="
 
-:: Step 4: Run application
+:: Step 5: Run application
 python manage.py runserver
 
 pause
