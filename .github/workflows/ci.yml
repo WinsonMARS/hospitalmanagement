@@ -8,7 +8,7 @@ on:
 
 jobs:
   build:
-    runs-on: windows-latest   
+    runs-on: windows-latest
     steps:
       - uses: actions/checkout@v3
 
@@ -18,29 +18,36 @@ jobs:
           python-version: '3.9'
           cache: 'pip'
 
+      - name: Install dependencies
+        working-directory: ./hospitalmanagement
+        run: |
+          pip install --upgrade pip
+          pip install -r requirements.txt
+
       - name: Run build script
+        working-directory: ./hospitalmanagement
         run: .\build.bat
 
   test:
     runs-on: ubuntu-latest
     needs: build
     services:
-      db:
+      postgres:
         image: postgres:13
         env:
-          POSTGRES_USER: hospitaluser
-          POSTGRES_PASSWORD: hospitalpass
-          POSTGRES_DB: hospitaldb
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: test_db
         ports: [ "5432:5432" ]
         options: >-
-          --health-cmd pg_isready -U hospitaluser
+          --health-cmd pg_isready
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
 
     env:
       DJANGO_SETTINGS_MODULE: hospitalmanagement.settings
-      DATABASE_URL: postgres://hospitaluser:hospitalpass@db:5432/hospitaldb
+      DATABASE_URL: postgres://postgres:postgres@127.0.0.1:5432/test_db
 
     steps:
       - uses: actions/checkout@v3
@@ -50,12 +57,15 @@ jobs:
           cache: 'pip'
 
       - name: Install dependencies
+        working-directory: ./hospitalmanagement
         run: pip install -r requirements.txt
 
       - name: Run migrations
+        working-directory: ./hospitalmanagement
         run: python manage.py migrate
 
       - name: Run pytest with coverage + reports
+        working-directory: ./hospitalmanagement
         run: |
           pytest --cov=hospital \
                  --cov-report=term-missing \
@@ -66,6 +76,7 @@ jobs:
 
       - name: Upload test reports
         if: always()
+        working-directory: ./hospitalmanagement
         uses: actions/upload-artifact@v4
         with:
           name: test-reports
@@ -87,7 +98,7 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Build Docker image
-        run: docker build -t ${{ secrets.DOCKER_USERNAME }}/hospitalmanagement:latest .
+        run: docker build -t ${{ secrets.DOCKER_USERNAME }}/hospitalmanagement:latest ./hospitalmanagement
 
       - name: Push Docker image
         run: docker push ${{ secrets.DOCKER_USERNAME }}/hospitalmanagement:latest
